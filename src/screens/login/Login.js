@@ -1,5 +1,5 @@
 import  React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 
@@ -11,6 +11,8 @@ export function Login({ route, navigation }) {
     const [isSignInButtonPressed, setIsSignInButtonPressed] = useState(false);
     const [isSignUpButtonPressed, setIsSignUpButtonPressed] = useState(false);
     const [spinnerState, setSpinnerState] = useState(false);
+
+    const validationAlert = (title, message) => Alert.alert(title, message);
     
 
     useEffect(() => {   
@@ -22,11 +24,16 @@ export function Login({ route, navigation }) {
             setSpinnerState(true);
             setTimeout(() => {
                 console.log(selectedForm, usernameText, passwordText);
+                if (!usernameText || !passwordText) {
+                    setIsSignInButtonPressed(false);
+                    setSpinnerState(false);
+                    return validationAlert('Atenção', 'Preencha os campos de email e senha.');
+                }
                 setIsSignInButtonPressed(false);
                 setSpinnerState(false);
+                navigation.navigate('Home', { });
             }, 1000);
         }
-        
     }, [isSignInButtonPressed]);
 
 
