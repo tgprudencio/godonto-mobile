@@ -21,3 +21,12 @@ export async function getAppointments (userId, page) {
     return err;
   }
 }
+
+export async function deleteAppointment (appointmentId) {
+  try {
+    const response = await api.delete('/appointments/' + appointmentId);
+    return response;
+  } catch (err) {
+    return err;
+  }
+}

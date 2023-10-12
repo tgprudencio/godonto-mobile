@@ -1,12 +1,12 @@
 import  React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Footer } from '../../components/Footer';
 
-import { getAppointments } from '../../services/Http';
+import { getAppointments, deleteAppointment } from '../../services/Http';
 
 
 export function Appointment({ route, navigation }) {
@@ -18,18 +18,59 @@ export function Appointment({ route, navigation }) {
 
     useEffect(() => {
         setSpinnerState(true);
+        retrieveAppointments();
+    }, []);
+
+    function retrieveAppointments() {
         getAppointments(user.id, 1)
         .then((res) => {
             setSpinnerState(false);
-            console.log(res.data);
             setAppointments(res.data);
         })
         .catch((err) => {
             console.log(err);
             setSpinnerState(false);
             validationAlert('Atenção', err.error);
-        })
-    }, []);
+        });
+    }
+
+    function removeAppointment(appointmentId, date, time) {
+        Alert.alert(
+            'Atenção',
+            'Deseja desmarcar a consulta marcada para ' + date + ' às ' + time + '?',
+            [
+                {
+                    text: "Não",
+                    style: "cancel"
+                },
+                { 
+                  text: "Sim, desmarcar", onPress: () => {
+                    setSpinnerState(true);
+                    deleteAppointment(appointmentId)
+                    .then((res) => {
+                        setSpinnerState(false);
+                        Alert.alert(
+                            'Atenção',
+                            'Consulta cancelada com sucesso!',
+                            [
+                                { 
+                                text: "Ok", onPress: () => {
+                                    retrieveAppointments();
+                                }
+                                }
+                            ]
+                        );
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        setSpinnerState(false);
+                        validationAlert('Atenção', err.error);
+                    })
+                  }
+                }
+            ]
+        );
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -45,7 +86,7 @@ export function Appointment({ route, navigation }) {
                     <Text style = {{ color: '#F2F2F2', fontWeight: 'bold', }}>Nova consulta</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView style = {{ width: '90%', alignSelf: 'center' }}>
+            <ScrollView style = {{ width: '90%', alignSelf: 'center' }} >
                 { appointments.map(({ id, date, member, past, cancelable }, index) => {    
                     var days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
                     var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
@@ -80,7 +121,7 @@ export function Appointment({ route, navigation }) {
                                         <>
                                             <TouchableOpacity 
                                                 style = {{ width: 120, height: 40, borderWidth: 2, borderRadius: 20, borderColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center' }}
-                                                onPress = { () => console.log('cancelar agendamento') }
+                                                onPress = { () => removeAppointment(id, dateString, timeString) }
                                             >
                                                 <Text style = {{ color: '#F2F2F2', fontWeight: 'bold' }}>Cancelar</Text>
                                             </TouchableOpacity>
