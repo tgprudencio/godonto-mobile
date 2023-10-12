@@ -3,6 +3,7 @@ import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } f
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import { signIn } from '../../services/Http';
+import globalVariables from '../../services/GlobalVariables';
 
 
 export function Login({ route, navigation }) {
@@ -17,29 +18,31 @@ export function Login({ route, navigation }) {
     const validationAlert = (title, message) => Alert.alert(title, message);
     
 
-    useEffect(() => {   
+/*    useEffect(() => {   
         console.log(selectedForm);
-    }, [selectedForm]);
+    }, [selectedForm]);*/
 
     useEffect(() => {   
         if (isSignInButtonPressed) {
             setSpinnerState(true);
             setTimeout(() => {
                 console.log(selectedForm, usernameText, passwordText);
-                if (!usernameText || !passwordText) {
+                /*if (!usernameText || !passwordText) {
                     setIsSignInButtonPressed(false);
                     setSpinnerState(false);
                     return validationAlert('Atenção', 'Preencha os campos de email e senha.');
-                }
+                }*/
                 setIsSignInButtonPressed(false);
                 setSpinnerState(false);
                 
                 setTimeout(() => {
-                    signIn(usernameText.toLowerCase(), passwordText)
+                    //signIn(usernameText.toLowerCase(), passwordText)
+                    signIn('thiago@gmail.com', '123456789')
                     .then((res) => {
                       if (res.status == 200) { // Success
-                        console.log(res);
+                        globalVariables.lastVisitedScreen = 'Login';
                         navigation.navigate('Home', { user: res.data.user });
+                        
                       } else if (res.status == 403) { // Invalid credentials
                         console.log('login credentials failed!');
                         Alert.alert('Atenção', 'Usuário e/ou senha inválida.');

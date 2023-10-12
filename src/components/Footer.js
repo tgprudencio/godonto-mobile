@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View  } from 'react-native';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { TouchableOpacity, View  } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import globalVariables from '../services/GlobalVariables';
 
-export function Footer() {
+export function Footer(props) {
     const navigation = useNavigation();
-    const [pressedButton, setPressedButton] = useState('home');
+    const [pressedButton, setPressedButton] = useState( globalVariables.lastVisitedScreen == 'Login' ? 'home' : '');
 
     useEffect(() => {
         if (pressedButton == 'home') {
-            console.log('ir para home');
+            globalVariables.lastVisitedScreen = globalVariables.currentVisitedScreen;
+            navigation.navigate('Home', { user: props.user });
         }
-        else {
+        else if(pressedButton == 'profile') {
             console.log('ir para perfil');
         }
     }, [pressedButton])

@@ -1,16 +1,18 @@
 import  React, { useEffect, useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions, useIsFocused } from '@react-navigation/native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Footer } from '../../components/Footer';
 
 import { getAppointments, deleteAppointment } from '../../services/Http';
+import globalVariables from '../../services/GlobalVariables';
 
 
 export function Appointment({ route, navigation }) {
     const { user } = route.params;
+    const isFocused = useIsFocused();
     const [spinnerState, setSpinnerState] = useState(false);
     const [appointments, setAppointments] = useState([]);
 
@@ -20,6 +22,14 @@ export function Appointment({ route, navigation }) {
         setSpinnerState(true);
         retrieveAppointments();
     }, []);
+
+    useEffect(() => {
+        if (isFocused) {
+            globalVariables.currentVisitedScreen = 'Appointment';
+            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
+        }
+        
+    }, [isFocused])
 
     function retrieveAppointments() {
         getAppointments(user.id, 1)
@@ -76,7 +86,10 @@ export function Appointment({ route, navigation }) {
         <SafeAreaView style={{ flex: 1 }}>
             <View style = {{ flexDirection: 'row', marginTop: 30, width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style = {{ flexDirection: 'row', alignItems: 'center', }} >
-                    <TouchableOpacity onPress={ () => navigation.dispatch(CommonActions.goBack()) }>
+                    <TouchableOpacity onPress={ () => {
+                        globalVariables.lastVisitedScreen = 'Appointment';
+                        navigation.dispatch(CommonActions.goBack());
+                    }}>
                         <Ionicons name = 'arrow-back' color = '#F2F2F2' size = { 35 }/>
                     </TouchableOpacity>
                     <Text style = {{ marginLeft: 10, fontWeight: 'bold', fontSize: 20, color: '#F2F2F2', }}>Consultas</Text>
@@ -146,7 +159,7 @@ export function Appointment({ route, navigation }) {
                 })}
             </ScrollView>
             
-            <Footer />
+            <Footer user = { user }/>
             { spinnerState == true ? 
                 <Spinner visible={spinnerState} />
             : null }  

@@ -3,10 +3,11 @@ import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'r
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Footer } from '../../components/Footer';
-
+import { useIsFocused } from '@react-navigation/native';
+import globalVariables from '../../services/GlobalVariables';
 
 export function Home({ route, navigation }) {
-
+    const isFocused = useIsFocused();
     const { user } = route.params;
     const [greetingText, setGreetingText] = useState('');
     const date = new Date();
@@ -16,8 +17,15 @@ export function Home({ route, navigation }) {
     useEffect(() => {
         console.log(user);
         setGreeting(date.getHours());
-    })
+    }, []);
 
+    useEffect(() => {
+        if (isFocused) {
+            globalVariables.currentVisitedScreen = 'Home';
+            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);    
+        }
+        
+    }, [isFocused]);
     
     function setGreeting(date) {
         if (date >= 6 && date <= 12) {
@@ -44,7 +52,10 @@ export function Home({ route, navigation }) {
                 <View style = {{ marginTop: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around', width: '100%'}}>
                     <TouchableOpacity 
                         style = {{ marginVertical: 10, width: 140, height: 140, borderRadius: 20, borderWidth: 3, borderColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center', backgroundColor: '#2B5353' }}
-                        onPress={ () => navigation.navigate('Appointment', { user: user }) }
+                        onPress={ () => {
+                            globalVariables.lastVisitedScreen = 'Home';
+                            navigation.navigate('Appointment', { user: user });
+                        }}
                     >
                         <Ionicons name="calendar" style = {{ color: '#F2F2F2', fontSize: 30, fontSize: 64 }}></Ionicons>
                         <Text style = {{ marginTop: 5, padding: 5, textAlign: 'center', color: '#F2F2F2', fontWeight: 'bold', fontSize: 15 }}>Agendamento de Consultas</Text>
@@ -66,7 +77,7 @@ export function Home({ route, navigation }) {
                 </View>
             </ScrollView>
             
-            <Footer />
+            <Footer user = { user }/>
         </SafeAreaView>
     )
 }
