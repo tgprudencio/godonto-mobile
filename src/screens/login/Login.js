@@ -35,7 +35,7 @@ export function Login({ route, navigation }) {
                 setSpinnerState(false);
                 
                 setTimeout(() => {
-                    signIn(usernameText, passwordText)
+                    signIn(usernameText.toLowerCase(), passwordText)
                     .then((res) => {
                       if (res.status == 200) { // Success
                         console.log(res);
@@ -46,8 +46,8 @@ export function Login({ route, navigation }) {
                         setSpinnerState(false);
                       } else { // Error
                         console.log('Handle submit failed!');
-                        console.log(res);
-                        Alert.alert('Atenção', res.message);
+                        console.log(res.data);
+                        Alert.alert('Atenção', res.data.error);
                         setSpinnerState(false);
                       }
                     })
@@ -95,6 +95,7 @@ export function Login({ route, navigation }) {
                         onChangeText = { setUsernameText }
                         value = { usernameText }
                         editable = { !spinnerState }
+                        autoCapitalize = 'none'
                     />
                     <Text style = {{ marginTop: 30, color: '#C7D0D0', fontSize: 16, fontWeight: 'bold' }}>Senha</Text>
                     <TextInput
@@ -105,6 +106,7 @@ export function Login({ route, navigation }) {
                         onChangeText = { setPasswordText }
                         value = { passwordText }
                         editable = { !spinnerState }
+                        autoCapitalize = 'none'
                     />
                 </View>
             </View>
