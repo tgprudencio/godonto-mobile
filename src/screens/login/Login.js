@@ -36,7 +36,6 @@ export function Login({ route, navigation }) {
                 
                 setTimeout(() => {
                     signIn(usernameText.toLowerCase(), passwordText)
-                    //signIn('thiago@gmail.com', '123456789')
                     .then((res) => {
                       if (res.status == 200) { // Success
                         globalVariables.lastVisitedScreen = 'Login';
