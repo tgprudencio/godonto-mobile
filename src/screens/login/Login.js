@@ -26,18 +26,17 @@ export function Login({ route, navigation }) {
         if (isSignInButtonPressed) {
             setSpinnerState(true);
             setTimeout(() => {
-                console.log(selectedForm, usernameText, passwordText);
-                /*if (!usernameText || !passwordText) {
+                if (!usernameText || !passwordText) {
                     setIsSignInButtonPressed(false);
                     setSpinnerState(false);
                     return validationAlert('Atenção', 'Preencha os campos de email e senha.');
-                }*/
+                }
                 setIsSignInButtonPressed(false);
                 setSpinnerState(false);
                 
                 setTimeout(() => {
-                    //signIn(usernameText.toLowerCase(), passwordText)
-                    signIn('thiago@gmail.com', '123456789')
+                    signIn(usernameText.toLowerCase(), passwordText)
+                    //signIn('thiago@gmail.com', '123456789')
                     .then((res) => {
                       if (res.status == 200) { // Success
                         globalVariables.lastVisitedScreen = 'Login';
