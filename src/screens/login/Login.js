@@ -2,6 +2,8 @@ import  React, { useEffect, useState } from 'react';
 import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+import { signIn } from '../../services/Http';
+
 
 export function Login({ route, navigation }) {
 
@@ -31,7 +33,30 @@ export function Login({ route, navigation }) {
                 }
                 setIsSignInButtonPressed(false);
                 setSpinnerState(false);
-                navigation.navigate('Home', { });
+                
+                setTimeout(() => {
+                    signIn(usernameText, passwordText)
+                    .then((res) => {
+                      if (res.status == 200) { // Success
+                        console.log(res);
+                        navigation.navigate('Home', { user: res.data.user });
+                      } else if (res.status == 403) { // Invalid credentials
+                        console.log('login credentials failed!');
+                        Alert.alert('Atenção', 'Usuário e/ou senha inválida.');
+                        setSpinnerState(false);
+                      } else { // Error
+                        console.log('Handle submit failed!');
+                        console.log(res);
+                        Alert.alert('Atenção', res.message);
+                        setSpinnerState(false);
+                      }
+                    })
+                    .catch((err) => {
+                      console.log('Handle submit error!');
+                      setSpinnerState(false);
+                      Alert.alert('Atenção', 'Houve um erro inesperado. Por favor, tente novamente. Se o erro persistir, reinicie o aplicativo.' + err)
+                    });
+                  }, 1000);
             }, 1000);
         }
     }, [isSignInButtonPressed]);
