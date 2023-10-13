@@ -7,6 +7,7 @@ import { Login } from './screens/login/Login';
 import { Home } from './screens/Home/Home';
 import { Appointment } from './screens/Appointment/Appointment';
 import { AppointmentNew } from './screens/AppointmentNew/AppointmentNew';
+import { AppointmentEdit } from './screens/AppointmentEdit/AppointmentEdit';
 
 
 const Stack = createNativeStackNavigator();
@@ -20,6 +21,7 @@ function App() {
         <Stack.Screen name = 'Home' component = { Home } />
         <Stack.Screen name = 'Appointment' component = { Appointment } />
         <Stack.Screen name = 'AppointmentNew' component = { AppointmentNew } />
+        <Stack.Screen name = 'AppointmentEdit' component = { AppointmentEdit } />
       </Stack.Navigator>
     </NavigationContainer>
   );

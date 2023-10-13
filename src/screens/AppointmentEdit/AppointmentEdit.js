@@ -6,12 +6,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Footer } from '../../components/Footer';
 
-import { getMembers, getAvailableDates, getAvailableTimes, createAppointment } from '../../services/Http';
+import { getMembers, getAvailableDates, getAvailableTimes, updateAppointment } from '../../services/Http';
 import globalVariables from '../../services/GlobalVariables';
 
 
-export function AppointmentNew({ route, navigation }) {
-    const { user } = route.params;
+export function AppointmentEdit({ route, navigation }) {
+    const { user, appointment } = route.params;
     const isFocused = useIsFocused();
     const [spinnerState, setSpinnerState] = useState(false);
     const [members, setMembers] = useState([]);
@@ -25,7 +25,7 @@ export function AppointmentNew({ route, navigation }) {
 
     useEffect(() => {
         if (isFocused) {
-            globalVariables.currentVisitedScreen = 'AppointmentNew';
+            globalVariables.currentVisitedScreen = 'AppointmentEdit';
             console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
             retrieveMembers();
         }
@@ -35,11 +35,18 @@ export function AppointmentNew({ route, navigation }) {
         setSpinnerState(true);
         getMembers()
         .then((res) => {
-            setSpinnerState(false);
+            var pickedMember;
             for (let i = 0; i < res.data.length; i++) {
-                res.data[i].selected = false;
+                if (res.data[i].id == appointment.member.id) {
+                    res.data[i].selected = true;
+                    pickedMember = res.data[i];
+                } else {
+                    res.data[i].selected = false;
+                }
             }
             setMembers(res.data);
+            setSelectedMember(pickedMember);
+            setSpinnerState(false);
         })
         .catch((err) => {
             console.log(err);
@@ -48,7 +55,7 @@ export function AppointmentNew({ route, navigation }) {
         });
     }
 
-    const handleSelectMember = (id) => {
+    /*const handleSelectMember = (id) => {
         var data = [];
         var allMembers = members;
         allMembers.map((item, index) => {
@@ -61,7 +68,7 @@ export function AppointmentNew({ route, navigation }) {
             data[index] = item;
         });
         setMembers(data);
-    }
+    }*/
 
     useEffect(() => {
         if (selectedMember) {
@@ -72,11 +79,18 @@ export function AppointmentNew({ route, navigation }) {
             setSelectedTime();
             getAvailableDates()
             .then((res) => {
-                setSpinnerState(false);
+                var pickedDate;
                 for (let i = 0; i < res.data.length; i++) {
-                    res.data[i].selected = false;
+                    if (res.data[i].name.slice(0, 10) == appointment.date.slice(0, 10)) {
+                        res.data[i].selected = true;
+                        pickedDate = res.data[i];
+                    } else {
+                        res.data[i].selected = false;
+                    }
                 }
                 setAvailableDates(res.data);
+                setSelectedDate(pickedDate);
+                setSpinnerState(false);
             })
             .catch((err) => {
                 console.log(err);
@@ -111,14 +125,24 @@ export function AppointmentNew({ route, navigation }) {
             getAvailableTimes(pickedMember.id, new Date(pickedDate.name).getTime())
             .then((res) => {
                 var available = [];
-                setSpinnerState(false);
+                var pickedTime;
                 for (let i = 0; i < res.data.length; i++) {
-                    res.data[i].selected = false;
-                    if (res.data[i].available) {
+                    var availableTimeConv = new Date(res.data[i].value).toLocaleTimeString().slice(0, 5);
+                    var appointmentTimeConv = new Date(appointment.date).toLocaleTimeString().slice(0, 5);
+                    
+                    if (availableTimeConv == appointmentTimeConv && res.data[i].value.slice(0, 10) == appointment.date.slice(0, 10)) {
+                        res.data[i].selected = true;
+                        pickedTime = res.data[i];
+                    } else {
+                        res.data[i].selected = false;
+                    }
+                    if ((res.data[i].available) || (!res.data[i].available && availableTimeConv == appointmentTimeConv) ) {
                         available.push(res.data[i]);
                     }
                 }
                 setAvailableTimes(available);
+                setSelectedTime(pickedTime);
+                setSpinnerState(false);
             })
             .catch((err) => {
                 console.log(err);
@@ -143,19 +167,25 @@ export function AppointmentNew({ route, navigation }) {
         setAvailableTimes(data);
     }
 
-    const bookAppointment = (pickedUser, pickedMember, pickedTime) => {
+    const bookAppointment = (pickedUser, pickedMember, pickedTime) => {        
+        if ((new Date(appointment.date).toLocaleTimeString().slice(0, 5) == new Date(pickedTime.value).toLocaleTimeString().slice(0, 5)) &&
+            (new Date(appointment.date).toLocaleTimeString().slice(0, 5), new Date(pickedTime.value).toLocaleTimeString().slice(0, 5))
+        ) {
+            return validationAlert('Atenção', 'Não houve mudanças na data e no horário da consulta');
+        }
+
         setSpinnerState(true);
-        createAppointment(pickedUser.id, pickedMember.id, pickedTime.value)
+        updateAppointment(appointment.id, pickedUser.id, pickedMember.id, pickedTime.value)
         .then((res) => {
             if (res.status == 200) {
                 setTimeout(() => {
                     setSpinnerState(false);
                     Alert.alert(
                         'Atenção',
-                        'Consulta agendada com sucesso!',
+                        'Consulta alterada com sucesso!',
                         [{ 
                             text: "Ok", onPress: () => {
-                                globalVariables.lastVisitedScreen = 'AppointmentNew';
+                                globalVariables.lastVisitedScreen = 'AppointmentEdit';
                                 navigation.dispatch(CommonActions.goBack());
                             }
                         }]
@@ -175,24 +205,24 @@ export function AppointmentNew({ route, navigation }) {
             <View style = {{ flexDirection: 'row', marginTop: 30, width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style = {{ flexDirection: 'row', alignItems: 'center', }} >
                     <TouchableOpacity onPress={ () => {
-                        globalVariables.lastVisitedScreen = 'AppointmentNew';
+                        globalVariables.lastVisitedScreen = 'AppointmentEdit';
                         navigation.dispatch(CommonActions.goBack());
                     }}>
                         <Ionicons name = 'arrow-back' color = '#F2F2F2' size = { 35 }/>
                     </TouchableOpacity>
-                    <Text style = {{ marginLeft: 10, fontWeight: 'bold', fontSize: 20, color: '#F2F2F2', }}>Agendar Consulta</Text>
+                    <Text style = {{ marginLeft: 10, fontWeight: 'bold', fontSize: 20, color: '#F2F2F2', }}>Editar Consulta</Text>
                 </View>
             </View>
             <ScrollView style = {{ width: '90%', alignSelf: 'center' }} >
-                
                 <Text style = {{ marginTop: 20, fontWeight: 'bold', fontSize: 16, color: '#F2F2F2', }}>Profissionais disponíveis</Text>
                 <ScrollView horizontal>
                     { members.map(({ id, name, selected }) => {                         
                         return (
                             <TouchableOpacity 
+                                disabled = { true }
                                 key = { id } 
-                                style = {{ marginTop: 15, marginHorizontal: 10, width: 100, alignItems: 'center', justifyContent: 'center', minHeight: 120, borderWidth: 2, borderColor: '#F2F2F2', borderRadius: 20, backgroundColor: selected ? '#FF4500' : '#2B5353' }}
-                                onPress = { () => handleSelectMember(id) }
+                                style = {{ marginTop: 15, marginHorizontal: 10, width: 100, alignItems: 'center', justifyContent: 'center', minHeight: 120, borderWidth: 2, borderColor: '#F2F2F2', borderRadius: 20, backgroundColor: selected ? '#FF4500' : '#2B5353', opacity: 0.5 }}
+                                //onPress = { () => handleSelectMember(id) }
                             >
                                 <View style = {{ padding: 5, alignItems: 'center', }}>
                                     <Ionicons name = 'person-circle' size = { 55 } color = '#F2F2F2' />

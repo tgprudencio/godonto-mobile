@@ -68,3 +68,12 @@ export async function createAppointment (userId, memberId, date) {
     return err;
   }
 }
+
+export async function updateAppointment (appointmentId, userId, memberId, date) {
+  try {
+    const response = await api.put('/appointments/' + appointmentId, { userId: userId, memberId: memberId, date: date });
+    return response;
+  } catch (err) {
+    return err;
+  }
+}

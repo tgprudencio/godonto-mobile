@@ -78,6 +78,15 @@ export function Appointment({ route, navigation }) {
         );
     }
 
+    function editAppointment(appointment) {
+        if (!appointment.cancelable) {
+            return validationAlert('Atenção', 'Consultas só podem ser alteradas com pelo menos 2 (duas) horas de antecedência.');
+        }
+        console.log(appointment);
+        globalVariables.lastVisitedScreen = 'Appointment';
+        navigation.navigate('AppointmentEdit', { user: user, appointment: appointment })
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style = {{ flexDirection: 'row', marginTop: 30, width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -102,23 +111,23 @@ export function Appointment({ route, navigation }) {
                 </TouchableOpacity>
             </View>
             <ScrollView style = {{ width: '90%', alignSelf: 'center' }} >
-                { appointments.map(({ id, date, member, past, cancelable }, index) => {    
+                { appointments.map((appointment, index) => {
                     var days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
                     var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-                    var d = new Date(date);
+                    var d = new Date(appointment.date);
                     var dayName = days[d.getDay()];
                     var monthName = months[d.getMonth()];
                     var dateString = dayName + ', ' + d.toISOString().slice(8,10) + ' ' + monthName;
                     var timeString = d.toLocaleTimeString().slice(0, 5) + 'h';     
                     
                     return (
-                        <View key = { id } style = {{ marginTop: 15, width: '100%', justifyContent: 'center', borderWidth: 3, borderColor: '#B2BDB9', borderRadius: 10, backgroundColor: '#596C72' }}>
+                        <View key = { appointment.id } style = {{ marginTop: 15, width: '100%', justifyContent: 'center', borderWidth: 3, borderColor: '#B2BDB9', borderRadius: 10, backgroundColor: '#596C72' }}>
                             <View style = {{ margin: 20 }}>
                                 <View style = {{ flexDirection: 'row', }}>
                                     <Ionicons name = 'person-circle' size = { 64 } color = '#F2F2F2' />
                                     <View style = {{ alignSelf: 'center', marginLeft: 10 }}>
-                                        <Text style = {{ color: '#F2F2F2', fontWeight: 'bold', fontSize: 18 }}>{ member.name }</Text>
-                                        <Text style = {{ color: '#F2F2F2', fontSize: 16 }}>{ member.specialization.name }</Text>
+                                        <Text style = {{ color: '#F2F2F2', fontWeight: 'bold', fontSize: 18 }}>{ appointment.member.name }</Text>
+                                        <Text style = {{ color: '#F2F2F2', fontSize: 16 }}>{ appointment.member.specialization.name }</Text>
                                     </View>
                                 </View>
                                 <View style = {{ marginVertical: 10, flexDirection: 'row', backgroundColor: '#4C5B62', borderRadius: 10, justifyContent: 'space-evenly' }}>
@@ -132,17 +141,17 @@ export function Appointment({ route, navigation }) {
                                     </View>
                                 </View>
                                 <View style = {{ marginTop: 5, flexDirection: 'row', justifyContent: 'space-around' }}>
-                                    { !past ? 
+                                    { !appointment.past ? 
                                         <>
                                             <TouchableOpacity 
                                                 style = {{ width: 120, height: 40, borderWidth: 2, borderRadius: 20, borderColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center' }}
-                                                onPress = { () => removeAppointment(id, dateString, timeString) }
+                                                onPress = { () => removeAppointment(appointment.id, dateString, timeString) }
                                             >
                                                 <Text style = {{ color: '#F2F2F2', fontWeight: 'bold' }}>Cancelar</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity 
                                                 style = {{ width: 120, height: 40, borderRadius: 20, backgroundColor: '#FF4500', alignItems: 'center', justifyContent: 'center' }}
-                                                onPress = { () => console.log('alterar agendamento') }
+                                                onPress = { () => editAppointment(appointment) }
                                             >
                                                 <Text style = {{ color: '#F2F2F2', fontWeight: 'bold' }}>Alterar</Text>
                                             </TouchableOpacity>
