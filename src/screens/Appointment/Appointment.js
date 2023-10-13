@@ -94,7 +94,13 @@ export function Appointment({ route, navigation }) {
                     </TouchableOpacity>
                     <Text style = {{ marginLeft: 10, fontWeight: 'bold', fontSize: 20, color: '#F2F2F2', }}>Consultas</Text>
                 </View>
-                <TouchableOpacity style = {{ flexDirection: 'row', backgroundColor: '#2DD36F', width: 130, height: 35, borderRadius: 10, alignItems: 'center', justifyContent: 'space-evenly'}}>
+                <TouchableOpacity 
+                    style = {{ flexDirection: 'row', backgroundColor: '#2DD36F', width: 130, height: 35, borderRadius: 10, alignItems: 'center', justifyContent: 'space-evenly'}}
+                    onPress = { () => {
+                        globalVariables.lastVisitedScreen = 'Appointment';
+                        navigation.navigate('AppointmentNew', { user: user });
+                    }}
+                >
                     <Ionicons name = 'add' size = { 24 } color = '#F2F2F2' />
                     <Text style = {{ color: '#F2F2F2', fontWeight: 'bold', }}>Nova consulta</Text>
                 </TouchableOpacity>

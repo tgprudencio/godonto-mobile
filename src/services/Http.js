@@ -30,3 +30,23 @@ export async function deleteAppointment (appointmentId) {
     return err;
   }
 }
+
+// AppointmentNew screen
+
+export async function getMembers () {
+  try {
+    const response = await api.get('/members');
+    return response;
+  } catch (err) {
+    return err;
+  }
+}
+
+export async function getAvailableDates () {
+  try {
+    const response = await api.get('/alldates');
+    return response;
+  } catch (err) {
+    return err;
+  }
+}
