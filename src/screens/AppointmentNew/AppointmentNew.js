@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Footer } from '../../components/Footer';
 
-import { getMembers, getAvailableDates } from '../../services/Http';
+import { getMembers, getAvailableDates, getAvailableTimes, createAppointment } from '../../services/Http';
 import globalVariables from '../../services/GlobalVariables';
 
 
@@ -18,11 +18,12 @@ export function AppointmentNew({ route, navigation }) {
     const [selectedMember, setSelectedMember] = useState();
     const [availableDates, setAvailableDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState();
+    const [availableTimes, setAvailableTimes] = useState([]);
+    const [selectedTime, setSelectedTime] = useState();
 
     const validationAlert = (title, message) => Alert.alert(title, message);
 
     useEffect(() => {
-        //setSpinnerState(true);
         retrieveMembers();
     }, []);
 
@@ -34,6 +35,7 @@ export function AppointmentNew({ route, navigation }) {
     }, [isFocused])
 
     function retrieveMembers() {
+        setSpinnerState(true);
         getMembers()
         .then((res) => {
             setSpinnerState(false);
@@ -65,20 +67,26 @@ export function AppointmentNew({ route, navigation }) {
     }
 
     useEffect(() => {
-        setAvailableDates([]);
-        getAvailableDates()
-        .then((res) => {
-            setSpinnerState(false);
-            for (let i = 0; i < res.data.length; i++) {
-                res.data[i].selected = false;
-            }
-            setAvailableDates(res.data);
-        })
-        .catch((err) => {
-            console.log(err);
-            setSpinnerState(false);
-            validationAlert('Atenção', err.error);
-        });
+        if (selectedMember) {
+            setSpinnerState(true);
+            setAvailableDates([]);
+            setAvailableTimes([]);
+            setSelectedDate();
+            setSelectedTime();
+            getAvailableDates()
+            .then((res) => {
+                setSpinnerState(false);
+                for (let i = 0; i < res.data.length; i++) {
+                    res.data[i].selected = false;
+                }
+                setAvailableDates(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                setSpinnerState(false);
+                validationAlert('Atenção', err.error);
+            });
+        }
     }, [selectedMember]);
 
     const handleSelectDate = (id) => {
@@ -97,9 +105,72 @@ export function AppointmentNew({ route, navigation }) {
     }
 
     useEffect(() => {
-        console.log(selectedMember);
-        console.log(selectedDate);
+        if (selectedDate) {
+            var pickedMember = selectedMember;
+            var pickedDate = selectedDate;
+            setSpinnerState(true);
+            setAvailableTimes([]);
+            setSelectedTime();
+            getAvailableTimes(pickedMember.id, new Date(pickedDate.name).getTime())
+            .then((res) => {
+                var available = [];
+                setSpinnerState(false);
+                for (let i = 0; i < res.data.length; i++) {
+                    res.data[i].selected = false;
+                    if (res.data[i].available) {
+                        available.push(res.data[i]);
+                    }
+                }
+                setAvailableTimes(available);
+            })
+            .catch((err) => {
+                console.log(err);
+                setSpinnerState(false);
+                validationAlert('Atenção', err.error);
+            });
+        }
     }, [selectedDate]);
+
+    const handleSelectTime = (value) => {
+        var data = [];
+        var allTimes = availableTimes;
+        allTimes.map((item, index) => {
+            if (item.value == value) {
+                item.selected = true;
+                setSelectedTime(item);
+            } else {
+                item.selected = false;
+            }
+            data[index] = item;
+        });
+        setAvailableTimes(data);
+    }
+
+    const bookAppointment = (pickedUser, pickedMember, pickedTime) => {
+        setSpinnerState(true);
+        createAppointment(pickedUser.id, pickedMember.id, pickedTime.value)
+        .then((res) => {
+            if (res.status == 200) {
+                setTimeout(() => {
+                    setSpinnerState(false);
+                    Alert.alert(
+                        'Atenção',
+                        'Consulta agendada com sucesso!',
+                        [{ 
+                            text: "Ok", onPress: () => {
+                                navigation.dispatch(CommonActions.goBack());
+                            }
+                        }]
+                    );
+                }, 500);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            setSpinnerState(false);
+            validationAlert('Atenção', err.error);
+        });
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -159,10 +230,39 @@ export function AppointmentNew({ route, navigation }) {
                         </ScrollView>
                     </View>
                 : null }
+
+                { selectedDate && availableTimes.length > 0 ?
+                    <View>
+                        <Text style = {{ marginTop: 20, fontWeight: 'bold', fontSize: 16, color: '#F2F2F2', }}>Horários disponíveis</Text>
+                        <ScrollView horizontal>
+                            { availableTimes.map(({ time, value, selected }, index) => {  
+                                return (
+                                    <TouchableOpacity 
+                                        key = { index } 
+                                        style = {{ marginTop: 15, marginHorizontal: 10, width: 80, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#F2F2F2', borderRadius: 10, backgroundColor: selected ? '#FF4500' : '#2B5353' }}
+                                        onPress = { () => handleSelectTime(value) }
+                                    >
+                                        <View style = {{ padding: 5, alignItems: 'center', }}>
+                                            <Text style = {{ fontWeight: 'bold', color: '#F2F2F2', textAlign: 'center' }}>{ time }</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
+                : null }
                 
             </ScrollView>
+
+            <TouchableOpacity 
+                style = {{ marginVertical: 15, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', width: '90%', maxWidth: 500, backgroundColor: '#FF4500', borderRadius: 10, height: 45, opacity: (!selectedMember || !selectedDate || !selectedTime) ? 0.5 : 1 }}
+                disabled = { !selectedMember || !selectedDate || !selectedTime }
+                onPress = { () => bookAppointment(user, selectedMember, selectedTime) }
+            >
+                <Text style = {{ color: '#F2F2F2', textAlign: 'center', fontWeight: 'bold', fontSize: 16 }}>Realizar Agendamento</Text>
+            </TouchableOpacity>
             
-            <Footer user = { user }/>
+            <Footer user = { user } disableProfileButton = { true }/>
             { spinnerState == true ? 
                 <Spinner visible={spinnerState} />
             : null }  

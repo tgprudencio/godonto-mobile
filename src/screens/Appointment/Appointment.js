@@ -19,19 +19,15 @@ export function Appointment({ route, navigation }) {
     const validationAlert = (title, message) => Alert.alert(title, message);
 
     useEffect(() => {
-        setSpinnerState(true);
-        retrieveAppointments();
-    }, []);
-
-    useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'Appointment';
             console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
+            retrieveAppointments();
         }
-        
     }, [isFocused])
 
     function retrieveAppointments() {
+        setSpinnerState(true);
         getAppointments(user.id, 1)
         .then((res) => {
             setSpinnerState(false);
@@ -95,7 +91,7 @@ export function Appointment({ route, navigation }) {
                     <Text style = {{ marginLeft: 10, fontWeight: 'bold', fontSize: 20, color: '#F2F2F2', }}>Consultas</Text>
                 </View>
                 <TouchableOpacity 
-                    style = {{ flexDirection: 'row', backgroundColor: '#2DD36F', width: 130, height: 35, borderRadius: 10, alignItems: 'center', justifyContent: 'space-evenly'}}
+                    style = {{ flexDirection: 'row', backgroundColor: '#2DD36F', width: 135, height: 35, borderRadius: 10, alignItems: 'center', justifyContent: 'space-evenly'}}
                     onPress = { () => {
                         globalVariables.lastVisitedScreen = 'Appointment';
                         navigation.navigate('AppointmentNew', { user: user });
@@ -165,7 +161,7 @@ export function Appointment({ route, navigation }) {
                 })}
             </ScrollView>
             
-            <Footer user = { user }/>
+            <Footer user = { user } disableProfileButton = { false }/>
             { spinnerState == true ? 
                 <Spinner visible={spinnerState} />
             : null }  

@@ -50,3 +50,21 @@ export async function getAvailableDates () {
     return err;
   }
 }
+
+export async function getAvailableTimes (memberId, date) {
+  try {
+    const response = await api.get('/providers/' + memberId + '/available', { date: date });
+    return response;
+  } catch (err) {
+    return err;
+  }
+}
+
+export async function createAppointment (userId, memberId, date) {
+  try {
+    const response = await api.post('/appointments', { userId: userId, memberId: memberId, date: date });
+    return response;
+  } catch (err) {
+    return err;
+  }
+}

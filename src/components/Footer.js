@@ -26,16 +26,16 @@ export function Footer(props) {
             maxWidth: 800,
             position: 'fixed',
             bottom: 0,
-            backgroundColor: '#2B5353'
         }}>
             <TouchableOpacity 
-                style = {{ color: '#F2F2F2', fontSize: 30, width: '50%', alignItems: 'center', justifyContent: 'center' }}
+                style = {{ backgroundColor: '#2B5353', color: '#F2F2F2', fontSize: 30, width: '50%', alignItems: 'center', justifyContent: 'center' }}
                 onPress={ () => setPressedButton('home')}
                 >
                 <Ionicons name = 'home' size = { 30 } color = { pressedButton == 'home' ? '#FF4500' : '#F2F2F2'} />
             </TouchableOpacity>
             <TouchableOpacity 
-                style = {{ color: '#F2F2F2', fontSize: 30, width: '50%', alignItems: 'center', justifyContent: 'center' }}
+                disabled = { props.disableProfileButton }
+                style = {{ backgroundColor: '#2B5353', color: '#F2F2F2', fontSize: 30, width: '50%', alignItems: 'center', justifyContent: 'center', opacity: props.disableProfileButton ? 0.3 : 1 }}
                 onPress={ () => setPressedButton('profile')}
             >
                 <Ionicons name = 'person' size = { 30 } color = { pressedButton == 'profile' ? '#FF4500' : '#F2F2F2'} />

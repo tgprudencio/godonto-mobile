@@ -77,7 +77,7 @@ export function Home({ route, navigation }) {
                 </View>
             </ScrollView>
             
-            <Footer user = { user }/>
+            <Footer user = { user } disableProfileButton = { false }/>
         </SafeAreaView>
     )
 }
