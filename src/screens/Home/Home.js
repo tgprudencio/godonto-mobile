@@ -62,14 +62,20 @@ export function Home({ route, navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style = {{ marginVertical: 10, width: 140, height: 140, borderRadius: 20, borderWidth: 3, borderColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center', backgroundColor: '#2B5353' }}
-                        onPress={ () => validationAlert('Atenção', 'Módulo em desenvolvimento') }
+                        onPress={ () => {
+                            globalVariables.lastVisitedScreen = 'Home';
+                            navigation.navigate('History', { user: user });
+                        }}
                     >
                         <Ionicons name="list" style = {{ color: '#F2F2F2', fontSize: 30, fontSize: 64 }}></Ionicons>
                         <Text style = {{ marginTop: 5, padding: 5, textAlign: 'center', color: '#F2F2F2', fontWeight: 'bold', fontSize: 15 }}>Histórico de Consultas</Text>
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style = {{ marginVertical: 10, width: 140, height: 140, borderRadius: 20, borderWidth: 3, borderColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center', backgroundColor: '#2B5353' }}
-                        onPress={ () => validationAlert('Atenção', 'Módulo em desenvolvimento') }
+                        onPress={ () => {
+                            globalVariables.lastVisitedScreen = 'Home';
+                            navigation.navigate('Team', { user: user });
+                        }}
                     >
                         <Ionicons name="medical" style = {{ color: '#F2F2F2', fontSize: 30, fontSize: 64 }}></Ionicons>
                         <Text style = {{ marginTop: 5, padding: 5, textAlign: 'center', color: '#F2F2F2', fontWeight: 'bold', fontSize: 15 }}>Equipe de Profissionais</Text>

@@ -8,6 +8,8 @@ import { Home } from './screens/Home/Home';
 import { Appointment } from './screens/Appointment/Appointment';
 import { AppointmentNew } from './screens/AppointmentNew/AppointmentNew';
 import { AppointmentEdit } from './screens/AppointmentEdit/AppointmentEdit';
+import { History } from './screens/History/History';
+import { Team } from './screens/Team/Team';
 
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +21,8 @@ function App() {
       <Stack.Navigator initialRouteName = "Login" screenOptions = {{ headerShown: false, headerLeft: null, animation: 'slide_from_right', contentStyle: { backgroundColor: '#476969' }}}>
         <Stack.Screen name = 'Login' component = { Login } />
         <Stack.Screen name = 'Home' component = { Home } />
+        <Stack.Screen name = 'Team' component = { Team } />
+        <Stack.Screen name = 'History' component = { History } />
         <Stack.Screen name = 'Appointment' component = { Appointment } />
         <Stack.Screen name = 'AppointmentNew' component = { AppointmentNew } />
         <Stack.Screen name = 'AppointmentEdit' component = { AppointmentEdit } />
