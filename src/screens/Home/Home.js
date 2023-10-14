@@ -1,5 +1,5 @@
 import  React, { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Footer } from '../../components/Footer';
@@ -12,10 +12,7 @@ export function Home({ route, navigation }) {
     const [greetingText, setGreetingText] = useState('');
     const date = new Date();
 
-    const validationAlert = (title, message) => Alert.alert(title, message);
-
     useEffect(() => {
-        console.log(user);
         setGreeting(date.getHours());
     }, []);
 
@@ -83,7 +80,7 @@ export function Home({ route, navigation }) {
                 </View>
             </ScrollView>
             
-            <Footer user = { user } disableProfileButton = { true }/>
+            <Footer user = { user } disableProfileButton = { false } highlightHome = { true } highlightProfile = { false }/>
         </SafeAreaView>
     )
 }

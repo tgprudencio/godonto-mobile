@@ -31,17 +31,14 @@ export function Login({ route, navigation }) {
                     setSpinnerState(false);
                     return validationAlert('Atenção', 'Preencha os campos de email e senha.');
                 }
-                setIsSignInButtonPressed(false);
-                setSpinnerState(false);
-                
+                setIsSignInButtonPressed(false);                
                 setTimeout(() => {
                     signIn(usernameText.toLowerCase(), passwordText)
-                    //signIn('thiago@gmail.com', '123456789')
                     .then((res) => {
                       if (res.status == 200) { // Success
+                        setSpinnerState(false);
                         globalVariables.lastVisitedScreen = 'Login';
                         navigation.navigate('Home', { user: res.data.user });
-                        
                       } else if (res.status == 403) { // Invalid credentials
                         console.log('login credentials failed!');
                         Alert.alert('Atenção', 'Usuário e/ou senha inválida.');
@@ -56,7 +53,7 @@ export function Login({ route, navigation }) {
                     .catch((err) => {
                       console.log('Handle submit error!');
                       setSpinnerState(false);
-                      Alert.alert('Atenção', 'Houve um erro inesperado. Por favor, tente novamente. Se o erro persistir, reinicie o aplicativo.' + err)
+                      validationAlert('Atenção', err.error);
                     });
                   }, 1000);
             }, 1000);

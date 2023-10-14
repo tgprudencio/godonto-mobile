@@ -88,3 +88,23 @@ export async function getMemberAppointments (memberId) {
     return err;
   }
 }
+
+// Profile screen
+
+export async function updateUser (name, email, oldPassword, newPassword, confirmNewPassword) {
+  console.log(name, email, oldPassword, newPassword, confirmNewPassword);
+  try {
+    const response = await api.put('/users', 
+      { 
+        name: name, 
+        email: email, 
+        oldPassword: oldPassword, 
+        password: newPassword, 
+        confirmPassword: confirmNewPassword
+      }
+    );
+    return response;
+  } catch (err) {
+    return err;
+  }
+}

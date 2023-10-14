@@ -93,7 +93,7 @@ export function TeamMember({ route, navigation }) {
                 </View>
             </ScrollView>
             
-            <Footer user = { user } disableProfileButton = { true }/>
+            <Footer user = { user } disableProfileButton = { true } highlightHome = { false } highlightProfile = { false }/>
             { spinnerState == true ? 
                 <Spinner visible={spinnerState} />
             : null }  

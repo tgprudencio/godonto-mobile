@@ -260,7 +260,7 @@ export function AppointmentNew({ route, navigation }) {
                 <Text style = {{ color: '#F2F2F2', textAlign: 'center', fontWeight: 'bold', fontSize: 16 }}>Realizar Agendamento</Text>
             </TouchableOpacity>
             
-            <Footer user = { user } disableProfileButton = { true }/>
+            <Footer user = { user } disableProfileButton = { true } highlightHome = { false } highlightProfile = { false }/>
             { spinnerState == true ? 
                 <Spinner visible={spinnerState} />
             : null }  

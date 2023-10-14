@@ -170,7 +170,7 @@ export function Appointment({ route, navigation }) {
                 })}
             </ScrollView>
             
-            <Footer user = { user } disableProfileButton = { true }/>
+            <Footer user = { user } disableProfileButton = { false } highlightHome = { false } highlightProfile = { false }/>
             { spinnerState == true ? 
                 <Spinner visible={spinnerState} />
             : null }  

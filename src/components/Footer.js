@@ -6,17 +6,6 @@ import globalVariables from '../services/GlobalVariables';
 
 export function Footer(props) {
     const navigation = useNavigation();
-    const [pressedButton, setPressedButton] = useState( globalVariables.lastVisitedScreen == 'Login' ? 'home' : '');
-
-    useEffect(() => {
-        if (pressedButton == 'home') {
-            globalVariables.lastVisitedScreen = globalVariables.currentVisitedScreen;
-            navigation.navigate('Home', { user: props.user });
-        }
-        else if(pressedButton == 'profile') {
-            console.log('ir para perfil');
-        }
-    }, [pressedButton])
 
     return (
         <View style = {{
@@ -29,16 +18,22 @@ export function Footer(props) {
         }}>
             <TouchableOpacity 
                 style = {{ backgroundColor: '#2B5353', color: '#F2F2F2', fontSize: 30, width: '50%', alignItems: 'center', justifyContent: 'center' }}
-                onPress={ () => setPressedButton('home')}
+                onPress={ () => {
+                    globalVariables.lastVisitedScreen = globalVariables.currentVisitedScreen;
+                    navigation.navigate('Home', { user: props.user });
+                }}
                 >
-                <Ionicons name = 'home' size = { 30 } color = { pressedButton == 'home' ? '#FF4500' : '#F2F2F2'} />
+                <Ionicons name = 'home' size = { 30 } color = { props.highlightHome ? '#FF4500' : '#F2F2F2'} />
             </TouchableOpacity>
             <TouchableOpacity 
                 disabled = { props.disableProfileButton }
                 style = {{ backgroundColor: '#2B5353', color: '#F2F2F2', fontSize: 30, width: '50%', alignItems: 'center', justifyContent: 'center', opacity: props.disableProfileButton ? 0.3 : 1 }}
-                onPress={ () => setPressedButton('profile')}
+                onPress={ () => {
+                    globalVariables.lastVisitedScreen = globalVariables.currentVisitedScreen;
+                    navigation.navigate('Profile', { user: props.user });
+                }}
             >
-                <Ionicons name = 'person' size = { 30 } color = { pressedButton == 'profile' ? '#FF4500' : '#F2F2F2'} />
+                <Ionicons name = 'person' size = { 30 } color = { props.highlightProfile ? '#FF4500' : '#F2F2F2'} />
             </TouchableOpacity>
         </View>
     );
