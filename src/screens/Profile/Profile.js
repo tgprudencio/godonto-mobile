@@ -43,7 +43,7 @@ export function Profile({ route, navigation }) {
         if (newPasswordText != confirmNewPasswordText) {
             return validationAlert('Atenção', 'Sua nova senha nos campos \"Nova senha\" e \"Confirmar Nova Senha\" estão diferentes');
         }
-        if (newPasswordText.legnth < 6 || confirmNewPasswordText.length < 6) {
+        if (oldpasswordText && (newPasswordText.legnth < 6 || confirmNewPasswordText.length < 6)) {
             return validationAlert('Atenção', 'Sua nova senha deve ser superior a 6 (seis) caracteres');
         }
 
