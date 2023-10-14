@@ -10,6 +10,7 @@ import { AppointmentNew } from './screens/AppointmentNew/AppointmentNew';
 import { AppointmentEdit } from './screens/AppointmentEdit/AppointmentEdit';
 import { History } from './screens/History/History';
 import { Team } from './screens/Team/Team';
+import { TeamMember } from './screens/TeamMember/TeamMember';
 
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +23,7 @@ function App() {
         <Stack.Screen name = 'Login' component = { Login } />
         <Stack.Screen name = 'Home' component = { Home } />
         <Stack.Screen name = 'Team' component = { Team } />
+        <Stack.Screen name = 'TeamMember' component = { TeamMember } />
         <Stack.Screen name = 'History' component = { History } />
         <Stack.Screen name = 'Appointment' component = { Appointment } />
         <Stack.Screen name = 'AppointmentNew' component = { AppointmentNew } />

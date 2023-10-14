@@ -77,3 +77,14 @@ export async function updateAppointment (appointmentId, userId, memberId, date) 
     return err;
   }
 }
+
+// TeamMember screen
+
+export async function getMemberAppointments (memberId) {
+  try {
+    const response = await api.get('/appointments/' + memberId);
+    return response;
+  } catch (err) {
+    return err;
+  }
+}

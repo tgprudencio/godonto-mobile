@@ -66,7 +66,12 @@ export function Team({ route, navigation }) {
                 <View style = {{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly', width: '100%'}}>
                     { members.map((member) => {   
                         return (
-                            <TouchableOpacity key = { member.id } style = {{ marginTop: 20, width: 120, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', }}>
+                            <TouchableOpacity 
+                                key = { member.id } style = {{ marginTop: 20, width: 120, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', }}
+                                onPress = { () => {
+                                    navigation.navigate('TeamMember', { user: user, member: member })
+                                }}
+                            >
                                 <Ionicons name = 'person-circle' size = { 96 } color = '#F2F2F2' />
                                 <Text style= {{ marginTop: 5, color: '#F2F2F2', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>{ member.name }</Text>
                             </TouchableOpacity>
