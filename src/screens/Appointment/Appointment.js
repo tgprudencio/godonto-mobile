@@ -21,14 +21,13 @@ export function Appointment({ route, navigation }) {
     useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'Appointment';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
             retrieveAppointments();
         }
     }, [isFocused])
 
     function retrieveAppointments() {
         setSpinnerState(true);
-        getAppointments(user.id, 1)
+        getAppointments(user.id)
         .then((res) => {
             setSpinnerState(false);
             setAppointments(res.data);
@@ -82,7 +81,6 @@ export function Appointment({ route, navigation }) {
         if (!appointment.cancelable) {
             return validationAlert('Atenção', 'Consultas só podem ser alteradas com pelo menos 2 (duas) horas de antecedência.');
         }
-        console.log(appointment);
         globalVariables.lastVisitedScreen = 'Appointment';
         navigation.navigate('AppointmentEdit', { user: user, appointment: appointment })
     }

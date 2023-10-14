@@ -23,13 +23,8 @@ export function Profile({ route, navigation }) {
     const validationAlert = (title, message) => Alert.alert(title, message);
 
     useEffect(() => {
-        console.log(user);
-    }, []);
-
-    useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'Profile';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);    
         }
     }, [isFocused]);
     
@@ -57,7 +52,6 @@ export function Profile({ route, navigation }) {
         updateUser(nameText, emailText, oldpasswordText, newPasswordText, confirmNewPasswordText)
         .then((res) => {
             setSpinnerState(false);
-            console.log(res.data);
             if (res.status == 200) {
                 Alert.alert(
                     'Atenção',

@@ -13,9 +13,9 @@ export async function signIn (username, password) {
 
 // Appointment screen
 
-export async function getAppointments (userId, page) {
+export async function getAppointments (userId) {
   try {
-    const response = await api.get('/appointments', { userId: userId, page: page ? page : 1 });
+    const response = await api.get('/appointments', { userId: userId });
     return response;
   } catch (err) {
     return err;
@@ -92,7 +92,6 @@ export async function getMemberAppointments (memberId) {
 // Profile screen
 
 export async function updateUser (name, email, oldPassword, newPassword, confirmNewPassword) {
-  console.log(name, email, oldPassword, newPassword, confirmNewPassword);
   try {
     const response = await api.put('/users', 
       { 

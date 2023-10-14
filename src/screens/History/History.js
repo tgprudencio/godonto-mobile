@@ -21,7 +21,6 @@ export function History({ route, navigation }) {
     useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'History';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
             retrieveAppointments();
         }
     }, [isFocused])

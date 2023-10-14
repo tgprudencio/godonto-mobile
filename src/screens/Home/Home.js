@@ -19,9 +19,7 @@ export function Home({ route, navigation }) {
     useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'Home';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);    
         }
-        
     }, [isFocused]);
     
     function setGreeting(date) {

@@ -21,7 +21,6 @@ export function Team({ route, navigation }) {
     useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'Team';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
             retrieveMembers();
         }
     }, [isFocused])

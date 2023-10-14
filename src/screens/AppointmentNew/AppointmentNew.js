@@ -26,7 +26,6 @@ export function AppointmentNew({ route, navigation }) {
     useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'AppointmentNew';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
             retrieveMembers();
         }
     }, [isFocused])

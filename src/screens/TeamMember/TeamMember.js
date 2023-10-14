@@ -1,5 +1,5 @@
 import  React, { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { CommonActions, useIsFocused } from '@react-navigation/native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,7 +20,6 @@ export function TeamMember({ route, navigation }) {
     useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'TeamMember';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
             loadMemberInfo(member.id);
         }
     }, [isFocused]);

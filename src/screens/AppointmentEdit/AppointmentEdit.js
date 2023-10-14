@@ -26,7 +26,6 @@ export function AppointmentEdit({ route, navigation }) {
     useEffect(() => {
         if (isFocused) {
             globalVariables.currentVisitedScreen = 'AppointmentEdit';
-            console.log(globalVariables.lastVisitedScreen, globalVariables.currentVisitedScreen);
             retrieveMembers();
         }
     }, [isFocused])
@@ -54,21 +53,6 @@ export function AppointmentEdit({ route, navigation }) {
             validationAlert('Atenção', err.error);
         });
     }
-
-    /*const handleSelectMember = (id) => {
-        var data = [];
-        var allMembers = members;
-        allMembers.map((item, index) => {
-            if (item.id == id) {
-                item.selected = true;
-                setSelectedMember(item);
-            } else {
-                item.selected = false;
-            }
-            data[index] = item;
-        });
-        setMembers(data);
-    }*/
 
     useEffect(() => {
         if (selectedMember) {
@@ -222,7 +206,6 @@ export function AppointmentEdit({ route, navigation }) {
                                 disabled = { true }
                                 key = { id } 
                                 style = {{ marginTop: 15, marginHorizontal: 10, width: 100, alignItems: 'center', justifyContent: 'center', minHeight: 120, borderWidth: 2, borderColor: '#F2F2F2', borderRadius: 20, backgroundColor: selected ? '#FF4500' : '#2B5353', opacity: 0.5 }}
-                                //onPress = { () => handleSelectMember(id) }
                             >
                                 <View style = {{ padding: 5, alignItems: 'center', }}>
                                     <Ionicons name = 'person-circle' size = { 55 } color = '#F2F2F2' />
