@@ -61,7 +61,7 @@ export function Profile({ route, navigation }) {
             if (res.status == 200) {
                 Alert.alert(
                     'Atenção',
-                    'Dados atualizados com sucesso!',
+                    'Dados alterados com sucesso!',
                     [
                         { text: "Ok", onPress: () => {
                             user.name = nameText;
