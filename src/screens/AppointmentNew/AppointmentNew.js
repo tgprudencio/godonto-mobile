@@ -133,6 +133,7 @@ export function AppointmentNew({ route, navigation }) {
         allTimes.map((item, index) => {
             if (item.value == value) {
                 item.selected = true;
+                item.value = value.replace('+00:00', '-03:00');
                 setSelectedTime(item);
             } else {
                 item.selected = false;

@@ -111,6 +111,9 @@ export function AppointmentEdit({ route, navigation }) {
                 var available = [];
                 var pickedTime;
                 for (let i = 0; i < res.data.length; i++) {
+                    res.data[i].value = res.data[i].value.replace('+00:00', '-03:00');
+                }
+                for (let i = 0; i < res.data.length; i++) {
                     var availableTimeConv = new Date(res.data[i].value).toLocaleTimeString().slice(0, 5);
                     var appointmentTimeConv = new Date(appointment.date).toLocaleTimeString().slice(0, 5);
                     
