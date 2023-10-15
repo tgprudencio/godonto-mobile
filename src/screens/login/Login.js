@@ -1,5 +1,5 @@
-import  React, { useEffect, useState } from 'react';
-import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import  React, { useEffect, useState, useRef } from 'react';
+import { Alert, Image, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import { signIn } from '../../services/Http';
@@ -8,6 +8,8 @@ import globalVariables from '../../services/GlobalVariables';
 
 export function Login({ route, navigation }) {
 
+    const inputUsername = useRef();
+    const inputPassword = useRef();
     const [selectedForm, setSelectedForm] = useState('user');
     const [usernameText, setUsernameText] = React.useState('');
     const [passwordText, setPasswordText] = React.useState('');
@@ -16,11 +18,6 @@ export function Login({ route, navigation }) {
     const [spinnerState, setSpinnerState] = useState(false);
 
     const validationAlert = (title, message) => Alert.alert(title, message);
-    
-
-/*    useEffect(() => {   
-        console.log(selectedForm);
-    }, [selectedForm]);*/
 
     useEffect(() => {   
         if (isSignInButtonPressed) {
@@ -41,12 +38,11 @@ export function Login({ route, navigation }) {
                         navigation.navigate('Home', { user: res.data.user });
                       } else if (res.status == 403) { // Invalid credentials
                         console.log('login credentials failed!');
-                        Alert.alert('Atenção', 'Usuário e/ou senha inválida.');
+                        validationAlert('Atenção', 'Usuário e/ou senha inválida.');
                         setSpinnerState(false);
                       } else { // Error
                         console.log('Handle submit failed!');
-                        console.log(res.data);
-                        Alert.alert('Atenção', res.data.error);
+                        validationAlert('Atenção', res.data.error);
                         setSpinnerState(false);
                       }
                     })
@@ -63,30 +59,31 @@ export function Login({ route, navigation }) {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 5, backgroundColor: '#2B5353', borderBottomLeftRadius: 30, borderBottomRightRadius: 30 }}>
-                <View style = {{ width: '90%', flex: 1, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', }}>
-                    <Image style = {{ flex: 1,  width: 150, }} resizeMode = 'contain' source = { require('../../assets/logo.png') } />
-                    <View style = {{ flexDirection: 'row',  width: 300, justifyContent: 'space-around' }}>
-                        <TouchableOpacity 
-                            style = {{ alignSelf: 'flex-end',  height: 40, justifyContent: 'center', borderBottomWidth: selectedForm == 'user' ? 3 : 0, borderColor: '#FF4500' }}
-                            onPress = { () => setSelectedForm('user') }
-                        >
-                            <Text style = {{ fontWeight: 'bold', fontSize: 18, color: '#F2F2F2', paddingHorizontal: 10, }}>Sou Paciente</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style = {{ alignSelf: 'flex-end', justifyContent: 'center', height: 40, borderBottomWidth: selectedForm == 'provider' ? 3 : 0, borderColor: '#FF4500' }}
-                            onPress = { () => setSelectedForm('provider') }
-                        >
-                            <Text style = {{ fontWeight: 'bold', fontSize: 18, color: '#F2F2F2', paddingHorizontal: 10 }}>Clínica</Text>
-                        </TouchableOpacity>
+            <ScrollView>
+                <View style={{ backgroundColor: '#2B5353', borderBottomLeftRadius: 30, borderBottomRightRadius: 30,  }}>
+                    <View style = {{ width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', }}>
+                        <Image style = {{ width: 150, height: 250, }} resizeMode = 'contain' source = { require('../../assets/logo.png') } />
+                        <View style = {{ flexDirection: 'row', width: 300, justifyContent: 'space-around', }}>
+                            <TouchableOpacity 
+                                style = {{ alignSelf: 'flex-end',  height: 40, justifyContent: 'center', borderBottomWidth: selectedForm == 'user' ? 3 : 0, borderColor: '#FF4500' }}
+                                onPress = { () => setSelectedForm('user') }
+                            >
+                                <Text style = {{ fontWeight: 'bold', fontSize: 18, color: '#F2F2F2', paddingHorizontal: 10, }}>Sou Paciente</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                                style = {{ alignSelf: 'flex-end', justifyContent: 'center', height: 40, borderBottomWidth: selectedForm == 'provider' ? 3 : 0, borderColor: '#FF4500' }}
+                                onPress = { () => setSelectedForm('provider') }
+                            >
+                                <Text style = {{ fontWeight: 'bold', fontSize: 18, color: '#F2F2F2', paddingHorizontal: 10 }}>Clínica</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-                
-            </View >
-            <View style = {{ flex: 6 }}>
-                <View style = {{ width: '90%', flex: 1, alignSelf: 'center', }}>
+            
+                <View style = {{ width: '90%', alignSelf: 'center', }}>
                     <Text style = {{ marginTop: 30, color: '#C7D0D0', fontSize: 16, fontWeight: 'bold' }}>Email</Text>
                     <TextInput
+                        ref = { inputUsername } 
                         style = {{ marginTop: 10, padding: 10, height: 45, color: '#F2F2F2', backgroundColor: '#2B5353', borderRadius: 10, fontStyle:'italic' }}
                         keyboardType = 'email-address'
                         placeholder = 'Digite aqui seu email'
@@ -95,9 +92,13 @@ export function Login({ route, navigation }) {
                         value = { usernameText }
                         editable = { !spinnerState }
                         autoCapitalize = 'none'
+                        onSubmitEditing={() => {
+                            inputPassword.current.focus();
+                        }}
                     />
                     <Text style = {{ marginTop: 30, color: '#C7D0D0', fontSize: 16, fontWeight: 'bold' }}>Senha</Text>
                     <TextInput
+                        ref = { inputPassword } 
                         style = {{ marginTop: 10, padding: 10, height: 45, color: '#F2F2F2', backgroundColor: '#2B5353', borderRadius: 10, fontStyle:'italic' }}
                         placeholder = 'Digite aqui sua senha'
                         placeholderTextColor = '#8EA2A2'
@@ -108,9 +109,7 @@ export function Login({ route, navigation }) {
                         autoCapitalize = 'none'
                     />
                 </View>
-            </View>
-            <View style = {{ flex: 2, }}>
-                <View style = {{  width: '90%', flex: 1, alignSelf: 'center', alignItems: 'center',  }}>
+                <View style = {{ marginTop: 60, width: '90%', alignSelf: 'center', alignItems: 'center',  }}>
                     <TouchableOpacity 
                         style = {{ backgroundColor: '#FF4500', borderRadius: 10, width: '100%', height: 40, alignItems: 'center', justifyContent: 'center' }}
                         onPress={ () => setIsSignInButtonPressed(true) }
@@ -127,7 +126,8 @@ export function Login({ route, navigation }) {
                     : null }
                     
                 </View>
-            </View>
+            </ScrollView>
+            
             { spinnerState == true ? 
                 <Spinner visible={spinnerState} />
             : null }  

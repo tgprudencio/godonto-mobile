@@ -1,7 +1,7 @@
 import { create } from 'apisauce';
 
 const api = create ({
-    baseURL: 'http://192.168.1.14:3333',
+    baseURL: 'http://localhost:3333', // local address for development
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
 });
 
